@@ -1,2 +1,2 @@
-# wordpress-theme-boilerplate
-Wordpress Theme Boilerplate - Clean way to start your WP theme.
+# Empty theme/boilerplate for Wordpress
+Clean way to start your WP new Wordpress Theme.
