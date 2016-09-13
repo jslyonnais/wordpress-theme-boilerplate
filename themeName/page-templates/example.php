@@ -25,7 +25,7 @@ $Partials->example(array('extraClass' => 'super-class')); // This is how we use 
     		<?php else: ?>
     			<!-- article -->
     			<article>
-    				<h2><?php _e( 'Sorry, nothing to display.', 'html5blank' ); ?></h2>
+    				<h2><?php _e( 'Sorry, nothing to display.', 'example' ); ?></h2>
     			</article>
     			<!-- /article -->
     		<?php endif; ?>

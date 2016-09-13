@@ -4,9 +4,9 @@
 		<!-- section -->
 		<section>
 
-			<h1><?php _e( 'Categories for ', 'html5blank' ); single_cat_title(); ?></h1>
+			<h1><?php _e( 'Categories for ', 'example' ); single_cat_title(); ?></h1>
 
-			<?php get_template_part('loop', get_post_type()); // Example ?>
+			<?php get_template_part('includes/loop', get_post_type()); // Example ?>
 
 			<?php get_template_part('pagination'); ?>
 

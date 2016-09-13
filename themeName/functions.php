@@ -1,8 +1,24 @@
 <?php
 
+
 ////////////////////////////////////////
 //	WP Config
 ////////////////////////////////////////
+
+/**
+ * Maintenance mode
+ *
+ * @see Easy way to put your website in maintenance mode (show a custom page if people open your website)
+ */
+add_action('get_header', 'maintenace_mode');
+function maintenace_mode() {
+    if (file_exists(ABSPATH . '.maintenance') && !(current_user_can('administrator') || current_user_can('super admin')) ) {
+        include_once(get_template_directory() . '/maintenance.php');
+        die();
+    }
+}
+
+
 
 /**
  * Remove menu options for admin
@@ -77,7 +93,7 @@ function custom_scripts() {
 /**
  * Load styles in frontend
  *
- * @see we put a timestamp to prevent caching when file is changed.
+ * @see we put a timestamp to prevent caching when the file is changed.
  */
 add_action('wp_enqueue_scripts', 'custom_styles');
 function custom_styles() {
@@ -114,9 +130,16 @@ function custom_styles() {
 
 
 
+
 ////////////////////////////////////////
 //	Custom Walkers
 ////////////////////////////////////////
+
+/**
+ * Import Walkers
+ *
+ * @see Import any custom walkers in `includes/walkers` folder
+ */
 foreach (scandir(dirname('includes/walkers')) as $filename) {
     $path = dirname('includes/walkers') . '/' . $filename;
     if (is_file($path)) {
@@ -130,6 +153,23 @@ foreach (scandir(dirname('includes/walkers')) as $filename) {
 ////////////////////////////////////////
 //	Custom Menus
 ////////////////////////////////////////
+
+/**
+ * BEM Menu
+ *
+ * @see Say goodbye to badly named menus in Wordpress and say hello to Wordpress BEM Menus!
+ * @see Then insert the following function into your theme. The first argument is the theme location (as defined in wp-admin) and the second argument is the class prefix you would like to use for this particular menu. The class prefix will be applied to the menu <ul>, every child <li> and <a> as the 'block'. The third optional argument accepts either an array() or a string.
+ * @param bem_menu('menu_location', 'my-menu', 'my-menu--my-modifier');
+ */
+include('includes/class.menu.php');
+
+
+
+/**
+ * Import Menus
+ *
+ * @see Import any custom menu in `includes/menu` folder
+ */
 foreach (scandir(dirname('includes/menus')) as $filename) {
     $path = dirname('includes/menus') . '/' . $filename;
     if (is_file($path)) {
@@ -144,6 +184,12 @@ foreach (scandir(dirname('includes/menus')) as $filename) {
 ////////////////////////////////////////
 //	Custom Post Types
 ////////////////////////////////////////
+
+/**
+ * Import Post Types
+ *
+ * @see Import any custom post types in `includes/post-types` folder
+ */
 foreach (scandir(dirname('includes/post-types')) as $filename) {
     $path = dirname('includes/post-types') . '/' . $filename;
     if (is_file($path)) {
