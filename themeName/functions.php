@@ -4,6 +4,14 @@
 ////////////////////////////////////////
 //	WP Config
 ////////////////////////////////////////
+/**
+ * Theme path
+ *
+ * @see You'll need that later to include some files
+ */
+$includesPath = '..' . str_replace(site_url(), '', get_template_directory_uri()) . '/includes/';
+
+
 
 /**
  * Maintenance mode
@@ -140,12 +148,15 @@ function custom_styles() {
  *
  * @see Import any custom walkers in `includes/walkers` folder
  */
-foreach (scandir(dirname('includes/walkers')) as $filename) {
-    $path = dirname('includes/walkers') . '/' . $filename;
-    if (is_file($path)) {
-        require_once $path;
-    }
-}
+ $pathWalkers = $includesPath . 'walkers';
+ $dirWalkers = array_slice(scandir($pathWalkers), 2);
+
+ foreach ($dirWalkers as $filename) {
+     $path =  'includes/walkers/' . $filename;
+     if (is_dir($pathWalkers)) {
+         include $path;
+     }
+ }
 
 
 
@@ -170,10 +181,13 @@ include('includes/class.menu.php');
  *
  * @see Import any custom menu in `includes/menu` folder
  */
-foreach (scandir(dirname('includes/menus')) as $filename) {
-    $path = dirname('includes/menus') . '/' . $filename;
-    if (is_file($path)) {
-        require_once $path;
+$pathMenu = $includesPath . 'menu';
+$dirMenu = array_slice(scandir($pathMenu), 2);
+
+foreach ($dirMenu as $filename) {
+    $path =  'includes/menu/' . $filename;
+    if (is_dir($pathPostTypes)) {
+        include $path;
     }
 }
 
@@ -190,14 +204,15 @@ foreach (scandir(dirname('includes/menus')) as $filename) {
  *
  * @see Import any custom post types in `includes/post-types` folder
  */
-foreach (scandir(dirname('includes/post-types')) as $filename) {
-    $path = dirname('includes/post-types') . '/' . $filename;
-    if (is_file($path)) {
-        require_once $path;
+$pathPostTypes = $includesPath . 'post-types';
+$dirPostTypes = array_slice(scandir($pathPostTypes), 2);
+
+foreach ($dirPostTypes as $filename) {
+    $path =  'includes/post-types/' . $filename;
+    if (is_dir($pathPostTypes)) {
+        include $path;
     }
 }
-
-
 
 
 ////////////////////////////////////////
