@@ -148,15 +148,9 @@ function custom_styles() {
  *
  * @see Import any custom walkers in `includes/walkers` folder
  */
- $pathWalkers = $includesPath . 'walkers';
- $dirWalkers = scandir($pathWalkers);
-
- if (count($dirWalkers) > 2) {
-     foreach (array_slice($dirWalkers, 2) as $filename) {
-         include 'includes/walkers/' . $filename;
-     }
- }
-
+foreach (glob($includesPath . '/*.php') as $file) {
+    include $file;
+}
 
 
 
@@ -180,13 +174,8 @@ include('includes/class.menu.php');
  *
  * @see Import any custom menu in `includes/menu` folder
  */
-$pathMenu = $includesPath . 'menus';
-$dirMenu = scandir($pathMenu);
-
-if (count($dirMenu) > 2) {
-    foreach (array_slice($dirMenu, 2) as $filename) {
-        include 'includes/menus/' . $filename;
-    }
+foreach (glob($includesPath . 'menus/*.php') as $file) {
+    include $file;
 }
 
 
@@ -202,16 +191,9 @@ if (count($dirMenu) > 2) {
  *
  * @see Import any custom post types in `includes/post-types` folder
  */
-$pathPostTypes = $includesPath . 'post-types';
-$dirPostTypes = scandir($pathPostTypes);
-
-if (count($dirPostTypes) > 2) {
-    foreach (array_slice($dirPostTypes, 2) as $filename) {
-        include 'includes/post-types/' . $filename;
-    }
+foreach (glob($includesPath . 'post-types/*.php') as $file) {
+    include $file;
 }
-
-
 
 
 
