@@ -148,7 +148,7 @@ function custom_styles() {
  *
  * @see Import any custom walkers in `includes/walkers` folder
  */
-foreach (glob($includesPath . '/*.php') as $file) {
+foreach (glob($includesPath . 'walkers/*.php') as $file) {
     include $file;
 }
 
