@@ -40,7 +40,7 @@ function remove_menus(){ // Clean menu items
 
 $user_editor = get_role( 'editor' );
 $user_editor->add_cap( 'edit_theme_options' );
-load_theme_textdomain('simetryk', get_template_directory() . '/languages');
+load_theme_textdomain('themename', get_template_directory() . '/languages');
 
 
 /**
