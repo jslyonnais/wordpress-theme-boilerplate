@@ -29,12 +29,31 @@ function maintenace_mode() {
 
 
 /**
- * Remove menu options for admin
+ * Admins options
  *
  */
 add_action('admin_menu', 'remove_menus');
 function remove_menus(){ // Clean menu items
     remove_menu_page('edit-comments.php'); //Comments
+    remove_menu_page('edit.php'); //Posts
+}
+
+$user_editor = get_role( 'editor' );
+$user_editor->add_cap( 'edit_theme_options' );
+load_theme_textdomain('simetryk', get_template_directory() . '/languages');
+
+
+/**
+ * Globalise elements
+ *
+ * @see Import variables such as polylang $lang.
+ */
+
+add_action( 'parse_query', 'global_lang_vars' );
+function global_lang_vars() {
+
+    global $lang;
+    $lang = get_locale();
 }
 
 
@@ -57,6 +76,17 @@ if (function_exists('add_theme_support')) {
     add_image_size('small', 120, '', true);   // Small Thumbnail
 }
 
+/**
+ * Unable SVG uploads
+ *
+ */
+add_filter('upload_mimes', 'cc_mime_types');
+function cc_mime_types($mimes) {
+    $mimes['svg'] = 'image/svg+xml';
+    return $mimes;
+}
+
+
 
 
 /**
@@ -77,26 +107,20 @@ function custom_scripts() {
         ); // Replace wp jQuery version with the one you need
         wp_enqueue_script(
             "vendorsscripts",
-            get_template_directory_uri() . "/ressources/dist/js/vendors.min.js",
+            get_template_directory_uri() . "/ressources/dist/js/vendors.min.js?time=" . filemtime(get_stylesheet_directory()."/ressources/dist/js/scripts.min.js"),
             array("jquery"),
-            filemtime(
-                get_stylesheet_directory()."/ressources/dist/js/vendors.min.js"
-            ),
+            false,
             true
         ); // Vendors scripts
         wp_enqueue_script(
             "scripts",
-            get_template_directory_uri() . "/ressources/dist/js/scripts.min.js",
+            get_template_directory_uri() . "/ressources/dist/js/scripts.min.js?time=" . filemtime(get_stylesheet_directory()."/ressources/dist/js/scripts.min.js"),
             array("jquery"),
-            filemtime(
-                get_stylesheet_directory()."/ressources/dist/js/scripts.min.js"
-            ),
+            false,
             true
         ); // Custom scripts
     }
 }
-
-
 
 /**
  * Load styles in frontend
@@ -124,15 +148,15 @@ function custom_styles() {
  *
  * @see Uncomment only if you need it && if you have ACF installed
  */
-// if(function_exists('acf_add_options_page')) {
-//     acf_add_options_page(array(
-//         'page_title' 	=> 'Options',
-//         'menu_title' 	=> 'Options',
-//         'menu_slug' 	=> 'custom-options',
-//         'capability' 	=> 'edit_posts',
-//         'redirect' 	    => false
-//     ));
-// }
+if(function_exists('acf_add_options_page')) {
+    acf_add_options_page(array(
+        'page_title' 	=> 'Options',
+        'menu_title' 	=> 'Options',
+        'menu_slug' 	=> 'custom-options',
+        'capability' 	=> 'edit_posts',
+        'redirect' 	    => false
+    ));
+}
 
 
 
@@ -159,17 +183,6 @@ foreach (glob($includesPath . 'walkers/*.php') as $file) {
 ////////////////////////////////////////
 
 /**
- * BEM Menu
- *
- * @see Say goodbye to badly named menus in Wordpress and say hello to Wordpress BEM Menus!
- * @see Then insert the following function into your theme. The first argument is the theme location (as defined in wp-admin) and the second argument is the class prefix you would like to use for this particular menu. The class prefix will be applied to the menu <ul>, every child <li> and <a> as the 'block'. The third optional argument accepts either an array() or a string.
- * @param bem_menu('menu_location', 'my-menu', 'my-menu--my-modifier');
- */
-include('includes/class.menu.php');
-
-
-
-/**
  * Import Menus
  *
  * @see Import any custom menu in `includes/menu` folder
@@ -177,6 +190,17 @@ include('includes/class.menu.php');
 foreach (glob($includesPath . 'menus/*.php') as $file) {
     include $file;
 }
+
+
+
+/**
+ * BEM Menu
+ *
+ * @see Say goodbye to badly named menus in Wordpress and say hello to Wordpress BEM Menus!
+ * @see Then insert the following function into your theme. The first argument is the theme location (as defined in wp-admin) and the second argument is the class prefix you would like to use for this particular menu. The class prefix will be applied to the menu <ul>, every child <li> and <a> as the 'block'. The third optional argument accepts either an array() or a string.
+ * @param bem_menu('menu_location', 'my-menu', 'my-menu--my-modifier');
+ */
+include('includes/class.menu.php');
 
 
 
@@ -227,6 +251,22 @@ function pretty_r($var){
     echo "<pre>";
         print_r($var);
     echo "</pre>";
+}
+
+/**
+ * Render svg file uploaded from amin
+ *
+ * @see 
+ */
+function renderSVG($image) {
+    $url = $image['url'];
+    $file = file_exists($_SERVER['DOCUMENT_ROOT'].preg_replace('#^'.WP_SITEURL.'#', '', $url));
+
+    if($file === true) {
+        echo file_get_contents($url);
+    } else {
+        echo "no image";
+    }
 }
 
 /**

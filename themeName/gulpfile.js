@@ -6,6 +6,7 @@
 
 var gulp        = require('gulp'),
     gulpif      = require('gulp-if'),
+    gulpkss     = require('gulp-kss'),
     util        = require('gulp-util'),
     sass        = require('gulp-sass'),
     rename      = require('gulp-rename'),
@@ -111,18 +112,26 @@ gulp.task('images', function() {
         .pipe(gulpif( config.production, notify('🗼 IMAGES task completed') ));
 });
 
-gulp.task('svg', function() {
+gulp.task('svgstore', function() {
     return gulp.src(path.src + 'images/**/*.svg')
         .pipe(rename({ prefix: 'icon-' }))
         .pipe(svgstore({ inlineSvg: true }))
-        .pipe(svgmin())
         .pipe(cheerio(function ($) {
             $('svg').attr('style',  'display:none');
         }))
-        .pipe(gulp.dest(path.dist + 'images/svg'))
-        .pipe(gulpif( config.production, notify('🗼 SVG task completed') ));
+        .pipe(rename("sprite.svg"))
+        .pipe(gulp.dest(path.dist + 'images/'));
 });
 
+gulp.task('svgmin', function() {
+    return gulp.src(path.src + 'images/**/*.svg')
+    .pipe(svgmin())
+    .pipe(gulp.dest(path.dist + 'images/'));
+});
+
+gulp.task('svg',['svgstore','svgmin'], function() {
+    console.log('🗼 SVG task completed');
+});
 
 
 ////////////////////////////////////////
@@ -135,8 +144,8 @@ gulp.task('default', ['styles', 'scripts-internal', 'scripts-vendors', 'images',
 });
 
 gulp.task('watch', function() {
-    gulp.watch(path.src + 'css',        ['styles']);                                // Watch .styles files
-    gulp.watch(path.src + 'js',         ['scripts-internal', 'scripts-vendors']);   // Watch .js files
-    gulp.watch(path.src + 'images',     ['images']);                                // Watch images files
-    gulp.watch(path.src + 'images/svg', ['svg']);                                   // Watch SVG files
+    gulp.watch(path.src + 'css/**/*',        ['styles']);                                // Watch .styles files
+    gulp.watch(path.src + 'js/**/*',         ['scripts-internal', 'scripts-vendors']);   // Watch .js files
+    gulp.watch(path.src + 'images/*',        ['images']);                                // Watch images files
+    gulp.watch(path.src + 'images/svg/*',    ['svg']);                                   // Watch SVG files
 });
